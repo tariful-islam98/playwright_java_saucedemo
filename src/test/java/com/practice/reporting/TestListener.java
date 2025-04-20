@@ -8,34 +8,50 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 public class TestListener implements ITestListener {
-    private static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
-
     @Override
     public void onTestStart(ITestResult result) {
-        ExtentTest test = ExtentReportManager.getExtent().createTest(result.getMethod().getMethodName());
-        extentTest.set(test);
+        // Start the test and log the name of the test in the Extent Report
+        ExtentReportManager.createTest(result.getName());
+        ExtentReportManager.logPass("Test started: " + result.getName());
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        extentTest.get().log(Status.PASS, "Test Passed");
+        // Log test success and the corresponding message in the Extent Report
+        ExtentReportManager.logPass("Test passed: " + result.getName());
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        extentTest.get().log(Status.FAIL, "Test Failed");
-        // Add screenshot if needed
-         extentTest.get().addScreenCaptureFromPath("screenshot.png");
+        // Log test failure and capture screenshot if available
+        ExtentReportManager.logFail("Test failed: " + result.getName());
+
+        // Optionally capture a screenshot on failure (this is just a placeholder)
+        // byte[] screenshot = someMethodToCaptureScreenshot();
+        // ExtentReportManager.addScreenshot(screenshot);
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        extentTest.get().log(Status.SKIP, "Test Skipped");
+        // Log test skipped
+        ExtentReportManager.logFail("Test skipped: " + result.getName());
     }
 
     @Override
-    public void onFinish(ITestContext context) {
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+        // This method will be called if a test fails but is within a success percentage
+        ExtentReportManager.logFail("Test failed but within success percentage: " + result.getName());
+    }
+
+    @Override
+    public void onStart(org.testng.ITestContext context) {
+        // Called before the suite or test starts
+        ExtentReportManager.initReport();
+    }
+
+    @Override
+    public void onFinish(org.testng.ITestContext context) {
+        // Called after the suite or test finishes
         ExtentReportManager.flushReport();
-        extentTest.remove();
     }
 }
