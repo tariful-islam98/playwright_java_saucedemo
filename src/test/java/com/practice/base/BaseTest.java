@@ -1,76 +1,27 @@
 package com.practice.base;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
-import com.practice.utilities.ConfigReader;
-import com.practice.utilities.ExtentReportManager;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
+import com.microsoft.playwright.*;
+import lombok.Getter;
 
 public class BaseTest {
     protected static Playwright playwright;
-    protected static ThreadLocal<Browser> browserThreadLocal = new ThreadLocal<>();
-    protected static ThreadLocal<Page> pageThreadLocal = new ThreadLocal<>();
+    protected static Browser browser;
+    protected static BrowserContext context;
+    @Getter
+    public static Page page;
 
-    @BeforeSuite
-    public static void setupSuite() {
+    public static void initializeBrowser() {
         playwright = Playwright.create();
-        ExtentReportManager.initReport();
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        context = browser.newContext(new Browser.NewContextOptions()
+                .setViewportSize(1920, 1080));
+        page = context.newPage();
     }
 
-    @BeforeMethod
-    public void setupTest() {
-        String browserName = ConfigReader.getProperty("browser.name", "chromium").toLowerCase();
-        Browser browser = createBrowserInstance(browserName);
-        browserThreadLocal.set(browser);
-        pageThreadLocal.set(browser.newPage());
+    public static void closeBrowser() {
+        if (page != null) page.close();
+        if (context != null) context.close();
+        if (browser != null) browser.close();
+        if (playwright != null) playwright.close();
     }
-
-    @AfterMethod
-    public void tearDownTest() {
-        Browser browser = browserThreadLocal.get();
-        if (browser != null) {
-            browser.close();
-            browserThreadLocal.remove();
-        }
-        pageThreadLocal.remove();
-    }
-
-    @AfterSuite
-    public static void tearDownSuite() {
-        if (playwright != null) {
-            playwright.close();
-        }
-        ExtentReportManager.flushReport();
-    }
-
-    // Helper methods to get current instances
-    public static Browser getBrowser() {
-        return browserThreadLocal.get();
-    }
-
-    public static Page getPage() {
-        return pageThreadLocal.get();
-    }
-
-    private Browser createBrowserInstance(String browserName) {
-        BrowserType browserType = switch (browserName) {
-            case "firefox" -> playwright.firefox();
-            case "webkit" -> playwright.webkit();
-            default -> playwright.chromium(); // default to chromium
-        };
-
-        boolean headless = Boolean.parseBoolean(
-                ConfigReader.getProperty("browser.headless", "false")
-        );
-
-        return browserType.launch(new BrowserType.LaunchOptions()
-                .setHeadless(headless));
-        //.setSlowMo(0));
-    }
-
 }
