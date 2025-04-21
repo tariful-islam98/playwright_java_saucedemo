@@ -56,5 +56,6 @@ public class LoginSteps {
 
     @Then("I should see an error message {string}")
     public void iShouldSeeAnErrorMessage(String message) {
+        assertEquals(message, loginPage.getErrorMessage());
     }
 }
