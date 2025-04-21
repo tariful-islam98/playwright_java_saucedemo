@@ -14,8 +14,10 @@ public class BaseTest {
     public static void initializeBrowser() {
         playwright = Playwright.create();
         browser = createBrowserInstance();
+        int width = Integer.parseInt(ConfigReader.getProperty("browser.width", "1920"));
+        int height = Integer.parseInt(ConfigReader.getProperty("browser.height", "1080"));
         context = browser.newContext(new Browser.NewContextOptions()
-                .setViewportSize(1920, 1080));
+                .setViewportSize(width, height));
         page = context.newPage();
     }
 
@@ -28,10 +30,11 @@ public class BaseTest {
 
     private static Browser createBrowserInstance(){
         String browserType = ConfigReader.getProperty("browser.name", "chromium");
+        boolean isHeadless = Boolean.parseBoolean(ConfigReader.getProperty("browser.headless", "false"));
         return switch (browserType.toLowerCase()) {
-            case "firefox" -> playwright.firefox().launch(new BrowserType.LaunchOptions().setHeadless(false));
-            case "webkit" -> playwright.webkit().launch(new BrowserType.LaunchOptions().setHeadless(false));
-            default -> playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+            case "firefox" -> playwright.firefox().launch(new BrowserType.LaunchOptions().setHeadless(isHeadless));
+            case "webkit" -> playwright.webkit().launch(new BrowserType.LaunchOptions().setHeadless(isHeadless));
+            default -> playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(isHeadless));
         };
     }
 }
