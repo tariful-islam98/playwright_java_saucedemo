@@ -8,6 +8,7 @@ public class LoginPage {
     private final String usernameField = "#user-name";
     private final String passwordField = "#password";
     private final String loginButton = "#login-button";
+    private final String errorMessage = "//h3[@data-test='error']";
 
     public LoginPage() {
         this.page = BaseTest.getPage();
@@ -23,5 +24,9 @@ public class LoginPage {
 
     public void clickLoginButton(){
         page.click(loginButton);
+    }
+
+    public String getErrorMessage(){
+        return page.locator(errorMessage).innerText();
     }
 }
