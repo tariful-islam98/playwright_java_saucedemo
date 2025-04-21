@@ -6,7 +6,7 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 import java.nio.file.Paths;
 
 public class WebActions {
-    protected Page page;
+    public Page page;
 
     public WebActions(Page page) {
         this.page = page;
