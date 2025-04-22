@@ -51,11 +51,11 @@ public class LoginSteps {
 
     @And("the page title should be {string}")
     public void thePageTitleShouldBe(String title) {
-        assertEquals(title, inventoryPage.getPageTitle());
+        assertEquals(inventoryPage.getPageTitle(), title);
     }
 
     @Then("I should see an error message {string}")
     public void iShouldSeeAnErrorMessage(String message) {
-        assertEquals(message, loginPage.getErrorMessage());
+        assertEquals(loginPage.getErrorMessage(), message);
     }
 }
