@@ -1,5 +1,6 @@
 package com.practice.pages;
 
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.practice.base.BaseTest;
 
@@ -14,19 +15,23 @@ public class LoginPage {
         this.page = BaseTest.getPage();
     }
 
-    public void enterUsername(String username){
+    public void enterUsername(String username) {
         page.fill(usernameField, username);
     }
 
-    public void enterPassword(String password){
+    public void enterPassword(String password) {
         page.fill(passwordField, password);
     }
 
-    public void clickLoginButton(){
+    public void clickLoginButton() {
         page.click(loginButton);
     }
 
-    public String getErrorMessage(){
+    public String getErrorMessage() {
         return page.locator(errorMessage).innerText();
+    }
+
+    public Locator getLoginButton() {
+        return page.locator(loginButton);
     }
 }
