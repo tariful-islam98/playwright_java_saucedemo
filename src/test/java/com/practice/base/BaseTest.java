@@ -24,8 +24,8 @@ public class BaseTest {
         logger.info("Creating browser instance...");
         browser = createBrowserInstance();
 
-        int width = Integer.parseInt(ConfigReader.getProperty("browser.width", "1920"));
-        int height = Integer.parseInt(ConfigReader.getProperty("browser.height", "1080"));
+        int width = Integer.parseInt(ConfigReader.getProperty("viewport.width", "1920"));
+        int height = Integer.parseInt(ConfigReader.getProperty("viewport.height", "1080"));
         logger.info("Setting browser viewport size to {}x{}", width, height);
 
         context = browser.newContext(new Browser.NewContextOptions()
