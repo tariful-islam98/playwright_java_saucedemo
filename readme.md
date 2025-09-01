@@ -5,7 +5,6 @@
 - TestNG Test Management
 - ExtentReports with Screenshots
 - Dynamic Time-Stamped Reports
-- Right-Click Scenario Execution
 ## Project Structure
 ```
 src/test/
